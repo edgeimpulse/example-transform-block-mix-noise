@@ -67,8 +67,12 @@ FILENAME=$(basename -- "$IN_FILE")
 EXTENSION="${FILENAME##*.}"
 FILENAME="${FILENAME%.*}"
 
-i=0
+# copy the current file (not mixed) in as well
+OUT_FILE_NOT_MIXED="$OUT_DIRECTORY/$FILENAME.$EXTENSION"
+sox "$IN_FILE" -c 1 -r $FREQUENCY "$OUT_FILE_NOT_MIXED"
 
+# then loop from 1..OUT_COUNT and create mixed files
+i=1
 while [[ $i -lt $OUT_COUNT ]] ; do
     MIX_FILE_IN=/app/segments/$(ls /app/segments/ | shuf -n 1)
     OUT_FILE="$OUT_DIRECTORY/$FILENAME.m$i.$EXTENSION"

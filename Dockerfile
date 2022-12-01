@@ -1,24 +1,17 @@
-FROM ubuntu:18.04
-
+FROM python:3.7
 WORKDIR /app
 
-RUN apt update && apt install -y sox python3 python3-distutils curl ffmpeg libsox-fmt-mp3
+RUN apt update && apt install -y sox curl ffmpeg libsox-fmt-mp3 
 
-# Install youtube-dl
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python3 get-pip.py && \
-    rm get-pip.py
-RUN pip3 install youtube-dl
+# Install yt-dlp
 
-# Grab a traffic noise video
-RUN youtube-dl https://www.youtube.com/watch?v=cUpox5jGdRQ --extract-audio && \
-    mv *.m4a traffic.m4a
+RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+RUN chmod a+rx /usr/local/bin/yt-dlp  # Make executable
+# Grab a traffic noise video in mp3 format
+RUN yt-dlp https://www.youtube.com/watch?v=cUpox5jGdRQ --extract-audio --audio-format mp3 && \
+    mv *.mp3 traffic.mp3 
 
-# Take the first 30 minutes and turn into mp3
-RUN ffmpeg -i traffic.m4a -ss 00:00:00 -to 00:30:00 -c:v copy -c:a libmp3lame -q:a 4 traffic.mp3 && \
-    rm traffic.m4a
-
-# Create 3sec. segments from the 30 minutes of audio
+# Create 3sec. segments from the audio
 RUN mkdir -p segments && \
     ffmpeg -i traffic.mp3 -f segment -segment_time 3 -c copy segments/traffic_%04d.mp3 && \
     rm traffic.mp3

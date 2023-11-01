@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Number of files to create",
+        "help": "How many new files to create per input file. Noise is randomly mixed in per file.",
+        "type": "int",
+        "value": "10",
+        "param": "out-count"
+    },
+    {
+        "name": "Frequency",
+        "type": "int",
+        "param": "frequency",
+        "value": "16000",
+        "help": "Output frequency of the WAV files"
+    }
+]

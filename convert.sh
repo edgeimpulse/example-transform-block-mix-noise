@@ -8,6 +8,8 @@ set -e
 # ^ Turns 1 file into 10 files with mixed background noise (from /app/segments directory)
 #   Background noise section & loudness is randomly changed.
 
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -62,6 +64,12 @@ if [ ! "$OUT_COUNT" ]; then
     exit 1
 fi
 
+if [ -d "$SCRIPTPATH/segments" ]; then
+    SEGMENTS_DIR="$SCRIPTPATH/segments"
+else
+    SEGMENTS_DIR=/app/segments
+fi
+
 mkdir -p $OUT_DIRECTORY
 FILENAME=$(basename -- "$IN_FILE")
 EXTENSION="${FILENAME##*.}"
@@ -71,10 +79,10 @@ FILENAME="${FILENAME%.*}"
 OUT_FILE_NOT_MIXED="$OUT_DIRECTORY/$FILENAME.$EXTENSION"
 sox "$IN_FILE" -c 1 -r $FREQUENCY "$OUT_FILE_NOT_MIXED"
 
-# then loop from 1..OUT_COUNT and create mixed files
+# then loop from 1..OUT_COUNT (exclusive, the original file counts for 1 as well) and create mixed files
 i=1
 while [[ $i -lt $OUT_COUNT ]] ; do
-    MIX_FILE_IN=/app/segments/$(ls /app/segments/ | shuf -n 1)
+    MIX_FILE_IN=$SEGMENTS_DIR/$(ls $SEGMENTS_DIR/ | shuf -n 1)
     OUT_FILE="$OUT_DIRECTORY/$FILENAME.m$i.$EXTENSION"
     MIX_FILE=/tmp/mix.wav
     IN_FILE_TMP=/tmp/in.wav

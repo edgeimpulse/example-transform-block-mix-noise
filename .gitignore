@@ -1,2 +1,4 @@
 .ei-block-config
 out/
+in/
+segments/

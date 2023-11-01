@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+# 20.04
+FROM ubuntu:focal-20230801
 
 WORKDIR /app
 
@@ -8,15 +9,13 @@ RUN apt update && apt install -y sox python3 python3-distutils curl ffmpeg libso
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3 get-pip.py && \
     rm get-pip.py
-RUN pip3 install youtube-dl
+RUN pip3 install yt-dlp==2023.10.13
 
-# Grab a traffic noise video
-RUN youtube-dl https://www.youtube.com/watch?v=cUpox5jGdRQ --extract-audio && \
-    mv *.m4a traffic.m4a
-
-# Take the first 30 minutes and turn into mp3
-RUN ffmpeg -i traffic.m4a -ss 00:00:00 -to 00:30:00 -c:v copy -c:a libmp3lame -q:a 4 traffic.mp3 && \
-    rm traffic.m4a
+# Grab a traffic noise video, take the first 30 minutes and turn into mp3
+RUN yt-dlp https://www.youtube.com/watch?v=cUpox5jGdRQ --extract-audio && \
+    mv *.opus traffic.opus && \
+    ffmpeg -i traffic.opus -ss 00:00:00 -to 00:30:00 -c:v copy -c:a libmp3lame -q:a 4 traffic.mp3 && \
+    rm traffic.opus
 
 # Create 3sec. segments from the 30 minutes of audio
 RUN mkdir -p segments && \

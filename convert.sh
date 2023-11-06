@@ -70,7 +70,7 @@ else
     SEGMENTS_DIR=/app/segments
 fi
 
-mkdir -p $OUT_DIRECTORY
+mkdir -p "$OUT_DIRECTORY"
 FILENAME=$(basename -- "$IN_FILE")
 EXTENSION="${FILENAME##*.}"
 FILENAME="${FILENAME%.*}"

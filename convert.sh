@@ -75,10 +75,6 @@ FILENAME=$(basename -- "$IN_FILE")
 EXTENSION="${FILENAME##*.}"
 FILENAME="${FILENAME%.*}"
 
-# copy the current file (not mixed) in as well
-OUT_FILE_NOT_MIXED="$OUT_DIRECTORY/$FILENAME.$EXTENSION"
-sox "$IN_FILE" -c 1 -r $FREQUENCY "$OUT_FILE_NOT_MIXED"
-
 # then loop from 1..OUT_COUNT (exclusive, the original file counts for 1 as well) and create mixed files
 i=1
 while [[ $i -lt $OUT_COUNT ]] ; do

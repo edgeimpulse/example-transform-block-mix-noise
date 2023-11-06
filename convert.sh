@@ -75,9 +75,9 @@ FILENAME=$(basename -- "$IN_FILE")
 EXTENSION="${FILENAME##*.}"
 FILENAME="${FILENAME%.*}"
 
-# then loop from 1..OUT_COUNT (exclusive, the original file counts for 1 as well) and create mixed files
+# then loop from 1..OUT_COUNT (inclusive) and create mixed files
 i=1
-while [[ $i -lt $OUT_COUNT ]] ; do
+while [[ $i -le $OUT_COUNT ]] ; do
     MIX_FILE_IN=$SEGMENTS_DIR/$(ls $SEGMENTS_DIR/ | shuf -n 1)
     OUT_FILE="$OUT_DIRECTORY/$FILENAME.m$i.$EXTENSION"
     MIX_FILE=/tmp/mix.wav
